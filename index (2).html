@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist Post-Limpieza</title>
+<meta name="description" content="Checklist post-limpieza para apartamento vacacional">
+<meta name="theme-color" content="#2A6B6B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Limpieza">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgcng9IjI4IiBmaWxsPSIjMkE2QjZCIi8+PHRleHQgeT0iODUiIHg9IjUwJSIgZm9udC1zaXplPSI3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+TojwvdGV4dD48L3N2Zz4=">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand:    #F5F0E8;
+    --linen:   #EDE7D9;
+    --teal:    #2A6B6B;
+    --ink:     #1C2B2B;
+    --muted:   #7A8C8C;
+    --done-bg: #EAF3F3;
+    --white:   #FFFFFF;
+    --warn:    #C0392B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--sand);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0 0 5rem;
+  }
+
+  /* ── PANTALLA 1: INICIO ── */
+  #screen-start {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+
+  .start-icon {
+    font-size: 3rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .start-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 6vw, 2.4rem);
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .start-sub {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    max-width: 280px;
+  }
+
+  .field-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    display: block;
+    text-align: left;
+    margin-bottom: 0.4rem;
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .field-wrap {
+    width: 100%;
+    max-width: 340px;
+    margin-bottom: 1rem;
+  }
+
+  .field-wrap input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    border: 1.5px solid var(--linen);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .field-wrap input:focus { border-color: var(--teal); }
+  .field-wrap input.error { border-color: var(--warn); }
+
+  .field-wrap .err-msg {
+    font-size: 0.75rem;
+    color: var(--warn);
+    margin-top: 0.3rem;
+    display: none;
+  }
+
+  .field-wrap.show-err .err-msg { display: block; }
+  .field-wrap.show-err input { border-color: var(--warn); }
+
+  .btn-primary {
+    width: 100%;
+    max-width: 340px;
+    padding: 0.85rem;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    margin-top: 0.5rem;
+  }
+
+  .btn-primary:hover { opacity: 0.88; }
+
+  /* ── PANTALLA 2: CHECKLIST ── */
+  #screen-check { display: none; }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--sand);
+    border-bottom: 1px solid var(--linen);
+    padding: 0.85rem 1.25rem 0.6rem;
+  }
+
+  .topbar-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .apt-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    color: var(--ink);
+  }
+
+  .progress-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--teal);
+  }
+
+  .progress-bar {
+    height: 5px;
+    background: var(--linen);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  .checklist-body {
+    padding: 1.25rem 1rem 2rem;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .section { margin-bottom: 1.75rem; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .section-icon {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: var(--teal);
+    display: grid;
+    place-items: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+
+  .items {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--linen);
+  }
+
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--linen);
+    cursor: pointer;
+    transition: background 0.12s;
+    user-select: none;
+  }
+
+  .item:last-child { border-bottom: none; }
+  .item:active { background: #F0F0F0; }
+  .item.done { background: var(--done-bg); }
+
+  .item input[type="checkbox"] {
+    appearance: none;
+    width: 20px; height: 20px;
+    border: 2px solid #C8D8D8;
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.12s, background 0.12s;
+  }
+
+  .item input[type="checkbox"]:checked {
+    background: var(--teal);
+    border-color: var(--teal);
+  }
+
+  .item input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 4px; top: 1px;
+    width: 8px; height: 5px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg);
+  }
+
+  .item-text {
+    font-size: 0.87rem;
+    line-height: 1.45;
+    padding-top: 1px;
+    transition: color 0.12s;
+  }
+
+  .item.done .item-text {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: #A0B8B8;
+  }
+
+  /* ── PANTALLA 3: RESUMEN ── */
+  #screen-summary { display: none; padding: 2rem 1.25rem 4rem; max-width: 680px; margin: 0 auto; }
+
+  .summary-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .summary-header .big-check {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .summary-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.7rem;
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+  }
+
+  .summary-header p {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .summary-box {
+    background: var(--white);
+    border: 1px solid var(--linen);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin-bottom: 1.25rem;
+    font-family: 'Inter', monospace;
+  }
+
+  .pending-section {
+    margin-bottom: 1.25rem;
+  }
+
+  .pending-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--warn);
+    margin-bottom: 0.5rem;
+  }
+
+  .pending-list {
+    background: #FDF0EE;
+    border: 1px solid #F1C4BE;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.83rem;
+    line-height: 1.6;
+    color: #7A1A10;
+  }
+
+  .btn-whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    padding: 0.9rem;
+    background: #25D366;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    margin-bottom: 0.75rem;
+    text-decoration: none;
+  }
+
+  .btn-whatsapp:hover { opacity: 0.88; }
+
+  .btn-secondary {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    background: transparent;
+    border: 1.5px solid var(--teal);
+    border-radius: 10px;
+    color: var(--teal);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    text-align: center;
+  }
+
+  .btn-secondary:hover { background: var(--teal); color: #fff; }
+
+  /* sticky footer CTA on checklist screen */
+  .footer-cta {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    padding: 0.85rem 1.25rem;
+    background: var(--sand);
+    border-top: 1px solid var(--linen);
+    display: none;
+  }
+
+  .footer-cta.visible { display: block; }
+
+  .footer-cta button {
+    width: 100%;
+    max-width: 680px;
+    display: block;
+    margin: 0 auto;
+    padding: 0.85rem;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .footer-cta button:hover { opacity: 0.88; }
+
+  .obs-wrap {
+    max-width: 680px;
+    margin: 0 auto 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .obs-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--teal);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .obs-wrap textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 0.75rem 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.87rem;
+    line-height: 1.5;
+    border: 1.5px solid var(--linen);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .obs-wrap textarea:focus { border-color: var(--teal); }
+  .obs-wrap textarea::placeholder { color: var(--muted); }
+
+  /* ── INSTALL BANNER ── */
+  .install-banner {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--ink);
+    color: #fff;
+    padding: 1rem 1.25rem;
+    z-index: 100;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .install-banner.show { display: flex; }
+
+  .install-banner-text {
+    flex: 1;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .install-banner-text strong {
+    display: block;
+    font-size: 0.88rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .install-banner-text span { color: #A8C8C8; }
+
+  .install-banner-close {
+    background: none;
+    border: none;
+    color: #A8C8C8;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .saved-name-hint {
+    font-size: 0.75rem;
+    color: var(--teal);
+    margin-top: 0.3rem;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ PANTALLA 1: INICIO ═══════════════════ -->
+<div id="screen-start">
+  <div class="start-icon">🏠</div>
+  <h1 class="start-title">Checklist<br>Post-Limpieza</h1>
+  <p class="start-sub">Introduce los datos antes de empezar la revisión.</p>
+
+  <div class="field-wrap" id="wrap-apt">
+    <label class="field-label" for="input-apt">Nombre del apartamento</label>
+    <input type="text" id="input-apt" placeholder="Ej: Apto 3B · Playa Norte">
+    <p class="err-msg">Escribe el nombre del apartamento para continuar.</p>
+  </div>
+
+  <div class="field-wrap" id="wrap-op">
+    <label class="field-label" for="input-op">Tu nombre</label>
+    <input type="text" id="input-op" placeholder="Ej: María García">
+    <p class="err-msg">Escribe tu nombre para continuar.</p>
+    <p class="saved-name-hint" id="saved-name-hint">✓ Nombre guardado de la última vez</p>
+  </div>
+
+  <div class="field-wrap" id="wrap-date">
+    <label class="field-label" for="input-date">Fecha de limpieza</label>
+    <input type="date" id="input-date">
+    <p class="err-msg">Selecciona la fecha para continuar.</p>
+  </div>
+
+  <button class="btn-primary" onclick="startChecklist()">Empezar revisión →</button>
+</div>
+
+<!-- ═══════════════════ PANTALLA 2: CHECKLIST ═══════════════════ -->
+<div id="screen-check">
+  <div class="topbar">
+    <div class="topbar-meta">
+      <span class="apt-name" id="display-apt"></span>
+      <span class="progress-label" id="progressLabel">0 / 0</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="checklist-body" id="checklist-body">
+    <!-- Sections injected by JS -->
+  </div>
+
+  <div class="obs-wrap" id="obs-wrap" style="display:none">
+    <label class="obs-label" for="input-obs">📝 Observaciones</label>
+    <textarea id="input-obs" placeholder="Escribe aquí cualquier incidencia, desperfecto o nota importante…"></textarea>
+  </div>
+
+  <div class="footer-cta" id="footer-cta">
+    <button onclick="goToSummary()">Ver resumen y enviar →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ PANTALLA 3: RESUMEN ═══════════════════ -->
+<div id="screen-summary">
+  <div class="summary-header">
+    <div class="big-check" id="summary-icon">✅</div>
+    <h2 id="summary-title">Revisión completa</h2>
+    <p id="summary-sub">Copia el resumen y envíalo por WhatsApp.</p>
+  </div>
+
+  <div class="summary-box" id="summary-text"></div>
+
+  <div class="pending-section" id="pending-section" style="display:none">
+    <p class="pending-label">⚠️ Ítems pendientes</p>
+    <div class="pending-list" id="pending-list"></div>
+  </div>
+
+  <a class="btn-whatsapp" id="btn-wa" href="#" target="_blank">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.558 4.114 1.528 5.838L.057 23.5l5.819-1.528A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.887 9.887 0 01-5.031-1.376l-.361-.214-3.733.979.997-3.638-.235-.374A9.861 9.861 0 012.106 12C2.106 6.58 6.58 2.106 12 2.106S21.894 6.58 21.894 12 17.42 21.894 12 21.894z"/></svg>
+    Copiar y abrir WhatsApp
+  </a>
+
+  <button class="btn-secondary" onclick="newChecklist()">Hacer otra revisión</button>
+</div>
+
+<!-- ═══════════════════ INSTALL BANNER ═══════════════════ -->
+<div class="install-banner" id="install-banner">
+  <div class="install-banner-text">
+    <strong>📲 Añadir a pantalla de inicio</strong>
+    <span id="install-instructions"></span>
+  </div>
+  <button class="install-banner-close" onclick="dismissBanner()">✕</button>
+</div>
+
+<script>
+// ─── INIT ───────────────────────────────────────────────────
+(function() {
+  // Pre-fill today's date
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm   = String(today.getMonth() + 1).padStart(2, '0');
+  const dd   = String(today.getDate()).padStart(2, '0');
+  document.getElementById('input-date').value = `${yyyy}-${mm}-${dd}`;
+
+  // Restore saved operator name
+  const saved = localStorage.getItem('op_name');
+  if (saved) {
+    document.getElementById('input-op').value = saved;
+    document.getElementById('saved-name-hint').style.display = 'block';
+  }
+
+  // Install banner
+  const dismissed = localStorage.getItem('banner_dismissed');
+  if (!dismissed) {
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isAndroid = /android/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+    if (!isStandalone && (isIOS || isAndroid)) {
+      const instructions = isIOS
+        ? 'Pulsa el botón Compartir (⎙) en Safari y selecciona "Añadir a pantalla de inicio".'
+        : 'Pulsa el menú (⋮) en Chrome y selecciona "Añadir a pantalla de inicio".';
+      document.getElementById('install-instructions').textContent = instructions;
+      document.getElementById('install-banner').classList.add('show');
+    }
+  }
+})();
+
+function dismissBanner() {
+  localStorage.setItem('banner_dismissed', '1');
+  document.getElementById('install-banner').classList.remove('show');
+}
+const SECTIONS = [
+  { icon: '🚪', title: 'Entrada & Zonas Comunes', items: [
+    'Puerta principal limpia (manija, marco y mirilla)',
+    'Felpudo sacudido o sustituido',
+    'Pasillos y hall sin polvo ni suciedad',
+    'Interruptores y enchufes desengrasados',
+    'Espejos sin manchas ni huellas',
+    'Basura vaciada y bolsas nuevas colocadas',
+  ]},
+  { icon: '🛋️', title: 'Salón & Comedor', items: [
+    'Sofá y cojines sacudidos y bien colocados',
+    'Mesa de comedor y sillas limpias',
+    'Televisión sin polvo (pantalla y base)',
+    'Mandos a distancia con pilas y funcionando',
+    'Estantes y superficies desempolvados',
+    'Ventanas y persianas limpias',
+    'Suelo barrido y fregado / aspirado',
+    'Decoraciones en su lugar y sin roturas',
+  ]},
+  { icon: '🍽️', title: 'Cocina', items: [
+    'Encimera desinfectada y sin restos',
+    'Fogones / vitrocerámica limpios',
+    'Horno y microondas limpios por dentro y fuera',
+    'Nevera vacía de restos, limpia y sin olores',
+    'Lavavajillas vacío y limpio (interior y filtro)',
+    'Fregadero y grifo sin cal ni residuos',
+    'Cubos de basura vaciados y con bolsa nueva',
+    'Vajilla, vasos y cubiertos contados y sin roturas',
+    'Utensilios de cocina en su lugar',
+    'Suelo fregado',
+    'Paños y esponjas renovados',
+  ]},
+  { icon: '🛏️', title: 'Dormitorios', items: [
+    'Sábanas y fundas cambiadas y bien estiradas',
+    'Mantas y colchas dobladas o colocadas',
+    'Almohadas en buenas condiciones y sin manchas',
+    'Mesitas de noche desempolvadas y vacías',
+    'Armarios vaciados de objetos de huéspedes anteriores',
+    'Perchas en orden',
+    'Ventanas y cortinas / persianas limpias',
+    'Suelo aspirado y fregado',
+    'Lámparas y apliques sin polvo y funcionando',
+  ]},
+  { icon: '🚿', title: 'Baños', items: [
+    'Inodoro desinfectado (interior, exterior y tapa)',
+    'Lavabo limpio y sin cal',
+    'Ducha / bañera sin jabón ni cal',
+    'Espejo brillante y sin manchas',
+    'Toallas limpias dobladas (mín. 2 por persona)',
+    'Papel higiénico repuesto (mín. 2 rollos)',
+    'Jabón y gel de ducha reabastecidos',
+    'Papelera vacía y con bolsa',
+    'Suelo fregado y seco',
+    'Ventilación operativa (sin malos olores)',
+  ]},
+  { icon: '🌿', title: 'Terraza & Balcón', items: [
+    'Muebles de exterior limpios y ordenados',
+    'Suelo barrido y sin restos',
+    'Plantas o macetas en buen estado',
+    'Cenicero vacío (si aplica)',
+    'Barandilla limpia',
+  ]},
+  { icon: '✅', title: 'Verificación Final', items: [
+    'Wi-Fi funcionando (contraseña visible)',
+    'Luces de todas las habitaciones operativas',
+    'Climatización (A/C o calefacción) funcionando',
+    'Manual de bienvenida / instrucciones en su lugar',
+    'Llaves o caja de llaves lista para el próximo huésped',
+    'Puertas y ventanas correctamente cerradas',
+    'Sin objetos olvidados por huéspedes anteriores',
+    'Fotos del estado del apartamento tomadas',
+  ]},
+];
+
+// ─── STATE ──────────────────────────────────────────────────
+let aptName   = '';
+let opName    = '';
+let dateLabel = '';
+
+// ─── BUILD CHECKLIST ────────────────────────────────────────
+function buildChecklist() {
+  const body = document.getElementById('checklist-body');
+  body.innerHTML = '';
+  SECTIONS.forEach((sec, si) => {
+    const sDiv = document.createElement('div');
+    sDiv.className = 'section';
+    sDiv.innerHTML = `
+      <div class="section-header">
+        <div class="section-icon">${sec.icon}</div>
+        <span class="section-title">${sec.title}</span>
+      </div>
+      <div class="items" id="items-${si}"></div>`;
+    body.appendChild(sDiv);
+
+    const container = sDiv.querySelector(`#items-${si}`);
+    sec.items.forEach((text, ii) => {
+      const lbl = document.createElement('label');
+      lbl.className = 'item';
+      lbl.innerHTML = `<input type="checkbox" data-s="${si}" data-i="${ii}"> <span class="item-text">${text}</span>`;
+      lbl.querySelector('input').addEventListener('change', onCheck);
+      container.appendChild(lbl);
+    });
+  });
+}
+
+// ─── ON CHECK ───────────────────────────────────────────────
+function onCheck(e) {
+  const item = e.target.closest('.item');
+  item.classList.toggle('done', e.target.checked);
+  updateProgress();
+}
+
+function allChecks() {
+  return document.querySelectorAll('#checklist-body input[type="checkbox"]');
+}
+
+function updateProgress() {
+  const checks = allChecks();
+  const total  = checks.length;
+  const done   = [...checks].filter(c => c.checked).length;
+  const pct    = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = done + ' / ' + total;
+
+  const cta = document.getElementById('footer-cta');
+  cta.classList.toggle('visible', done > 0);
+  document.getElementById('obs-wrap').style.display = done > 0 ? 'block' : 'none';
+}
+
+// ─── FLOW ───────────────────────────────────────────────────
+function startChecklist() {
+  const aptField  = document.getElementById('input-apt');
+  const opField   = document.getElementById('input-op');
+  const dateField = document.getElementById('input-date');
+  const wrapApt   = document.getElementById('wrap-apt');
+  const wrapOp    = document.getElementById('wrap-op');
+  const wrapDate  = document.getElementById('wrap-date');
+
+  let ok = true;
+  if (!aptField.value.trim())  { wrapApt.classList.add('show-err');  ok = false; } else { wrapApt.classList.remove('show-err'); }
+  if (!opField.value.trim())   { wrapOp.classList.add('show-err');   ok = false; } else { wrapOp.classList.remove('show-err'); }
+  if (!dateField.value)        { wrapDate.classList.add('show-err'); ok = false; } else { wrapDate.classList.remove('show-err'); }
+  if (!ok) return;
+
+  aptName = aptField.value.trim();
+  opName  = opField.value.trim();
+  localStorage.setItem('op_name', opName);
+
+  // Format date as dd/mm/yyyy
+  const [y, m, d] = dateField.value.split('-');
+  dateLabel = `${d}/${m}/${y}`;
+
+  buildChecklist();
+  document.getElementById('display-apt').textContent = aptName;
+  updateProgress();
+
+  document.getElementById('screen-start').style.display = 'none';
+  document.getElementById('screen-check').style.display  = 'block';
+  window.scrollTo(0, 0);
+}
+
+function goToSummary() {
+  const checks   = allChecks();
+  const total    = checks.length;
+  const doneList = [];
+  const pendList = [];
+
+  let currentSection = '';
+  checks.forEach(cb => {
+    const si = parseInt(cb.dataset.s);
+    const text = cb.closest('.item').querySelector('.item-text').textContent;
+    const secTitle = SECTIONS[si].title;
+    if (cb.checked) doneList.push({ sec: secTitle, text });
+    else pendList.push({ sec: secTitle, text });
+  });
+
+  const done = doneList.length;
+  const allDone = done === total;
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+  // ── Build WhatsApp message ──
+  let msg = `✅ *CHECKLIST POST-LIMPIEZA*\n`;
+  msg += `🏠 *${aptName}*\n`;
+  msg += `👷 ${opName}\n`;
+  msg += `📅 ${dateLabel} · ${timeStr}\n`;
+  msg += `\n`;
+
+  if (allDone) {
+    msg += `Todo revisado ✔️ (${total}/${total} ítems)\n\n`;
+  } else {
+    msg += `✔️ Completados: ${done}/${total}\n`;
+    msg += `⚠️ Pendientes: ${pendList.length}\n\n`;
+  }
+
+  // Group done by section
+  const bySection = {};
+  SECTIONS.forEach(s => bySection[s.title] = []);
+  doneList.forEach(d => bySection[d.sec] && bySection[d.sec].push(d.text));
+
+  SECTIONS.forEach(sec => {
+    const items = bySection[sec.title];
+    if (items.length > 0) {
+      msg += `*${sec.icon} ${sec.title}*\n`;
+      items.forEach(t => msg += `  ✓ ${t}\n`);
+      msg += '\n';
+    }
+  });
+
+  if (pendList.length > 0) {
+    msg += `*⚠️ PENDIENTES*\n`;
+    pendList.forEach(p => msg += `  ✗ ${p.text}\n`);
+  }
+
+  const obs = document.getElementById('input-obs').value.trim();
+  if (obs) {
+    msg += `\n*📝 OBSERVACIONES*\n${obs}\n`;
+  }
+
+  // Update summary screen
+  document.getElementById('summary-icon').textContent  = allDone ? '🎉' : '⚠️';
+  document.getElementById('summary-title').textContent = allDone ? '¡Revisión completa!' : 'Revisión con pendientes';
+  document.getElementById('summary-sub').textContent   = `${aptName} · ${dateLabel} · ${timeStr}`;
+  document.getElementById('summary-text').textContent  = msg;
+
+  if (pendList.length > 0) {
+    document.getElementById('pending-section').style.display = 'block';
+    document.getElementById('pending-list').textContent = pendList.map(p => '✗ ' + p.text).join('\n');
+  } else {
+    document.getElementById('pending-section').style.display = 'none';
+  }
+
+  const encoded = encodeURIComponent(msg);
+  document.getElementById('btn-wa').href = `https://wa.me/?text=${encoded}`;
+  document.getElementById('btn-wa').onclick = () => {
+    navigator.clipboard && navigator.clipboard.writeText(msg).catch(() => {});
+  };
+
+  document.getElementById('screen-check').style.display   = 'none';
+  document.getElementById('footer-cta').classList.remove('visible');
+  document.getElementById('screen-summary').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function newChecklist() {
+  // Restore saved name
+  const saved = localStorage.getItem('op_name');
+  document.getElementById('input-apt').value  = '';
+  document.getElementById('input-op').value   = saved || '';
+  document.getElementById('saved-name-hint').style.display = saved ? 'block' : 'none';
+  document.getElementById('input-obs').value  = '';
+  document.getElementById('obs-wrap').style.display = 'none';
+  document.getElementById('screen-summary').style.display = 'none';
+  document.getElementById('screen-start').style.display  = 'flex';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
